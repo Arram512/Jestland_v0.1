@@ -1,0 +1,27 @@
+<AboutScreen>:    
+    orientation: 'vertical'
+
+    MDToolbar:
+        title: 'About'
+
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        GridLayout:
+
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+
+
+            MDLabel:
+                size_hint_y: None
+                text: 'Just for test'
+                height: self.font_size
+
+            Button:
+                size_hint_y: None
+                height: 100
+                text: 'Go back'
+                on_release: app.root.ids.manager.current = 'gestures_screen'

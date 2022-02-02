@@ -17,28 +17,24 @@ import time
 
 Window.size = (320, 600)
 
+class ContactsScreen(BoxLayout):
+	pass
+
+
+class AboutScreen(BoxLayout):
+    pass
 
 class ItemScreenDrawer(GridLayout):
-
-    """
-    Ժեստի մասին ավելի մանրամասն ինֆորմացիա, յա խզ ոնց , բայց աշխատում ա
-    """
 
     text = StringProperty()
     source = StringProperty()
 
-
 class ContentNavigationDrawer(BoxLayout):
-    """
-    Նավիգացիան ա նկարում, թե ոնց ա աշխատում, մենակ աստված գիտի
-    """
+ 
     pass
 
 class CardsDrawer(GridLayout):
 
-    """
-    Գլխավոր էկրանն ա, նախատեսվում ա որպես այբուբենի էկրան, առայժմ ռանդոմ վիդջթներ են քցած
-    """
 
     instance = ObjectProperty()
     source = StringProperty()
@@ -51,6 +47,8 @@ class MainWindow(MDBoxLayout):
     pass
 
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class Database:
     dictionary = {
     'instagram': 'img/giphy.gif',
@@ -59,82 +57,88 @@ class Database:
     }
 
 
-
 class CallBacks(Database):
 
-    def change_to_favorite_screen(self, instance):
+	###################################################################################
 
-        """Սոբստվեննո, կանչում ա են մանրամասն ինֆո նկարող կլասսը, տալիս ա ինչ իրան պետք ա, առայժմ մենակ գիֆն ա ու տեքստ"""
+	def favorite_back_button(self, instance):
+		print(self.favorite_more_screen)
 
-        text = instance.text
-        source = self.dictionary[text]
+		self.root.ids.favorite_more_screen.remove_widget(self.favorite_more_screen)
+		self.root.ids.favorite_screen_manager.current = 'favorite_screen'
 
-        self.root.ids.item_3_manager.current = 'favorite_more'
+	#*********************************************************************************#
+	def alphavite_back_button(self, instance):
 
-        self.root.ids.favorite_more_screen.add_widget(ItemScreenDrawer(text = text, source = source))
+		print(self.scr)
+		self.root.ids.more_screen.remove_widget(self.scr)
+		self.root.ids.first_screen_manager.current = 'list_screen'
 
-    def change_to_item_screen(self, instance):
+	#####################################################################################
 
-        """Լրիվ նույն ֆունկցիան ա, բացառությամբ, որ ֆավորտների էջում ա նկարում, աշխատում ա մի կերպ"""
+	def draw_the_favorite_screen(self, instance):
 
-        print("********************************************",'\n' ,instance)
 
-        text = instance.text
-        source = self.dictionary[text]
+		text = instance.text
+		source = self.dictionary[text]
 
-        self.root.ids.first_screen_manager.current = 'item_screen'
+		self.root.ids.favorite_screen_manager.current = 'favorite_more'
 
-        screen = ItemScreenDrawer(text = text, source = source)
-        button = Button(text = 'favorite')
-        button.bind(on_release = lambda x: self.favorite(instance))
-        screen.add_widget(button)
+		self.favorite_more_screen = ItemScreenDrawer(text = text, source = source)
 
-        self.root.ids.more_screen.add_widget(screen)
+		back_button = Button(text = 'back')
+		back_button.bind(on_release = lambda x: self.favorite_back_button(instance))
+
+		self.favorite_more_screen.add_widget(back_button)
+
+		self.root.ids.favorite_more_screen.add_widget(self.favorite_more_screen)
+
+	def draw_the_item_screen(self, instance):
+
+		text = instance.text
+		source = self.dictionary[text]
+
+		self.root.ids.first_screen_manager.current = 'item_screen'
+
+		screen = ItemScreenDrawer(text = text, source = source)
+		favorite_button = Button(text = 'favorite')
+		favorite_button.bind(on_release = lambda x: self.favorite(instance))
+
+		back_button = Button(text = 'back')
+		back_button.bind(on_release = lambda x: self.alphavite_back_button(instance))
+
+		screen.add_widget(favorite_button)
+		
+		screen.ids.favorite_back_button_layout.add_widget(back_button)
+
+		self.root.ids.more_screen.add_widget(screen)
+
+		self.scr = screen
+
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
 
 class MainApp(MDApp, CallBacks):
 
+    previouse_screen = ""
+
     def favorite(self, instance):
 
-        """Նկարում ա օբշի ֆավորիտների էջը"""
-
         print(instance)
-        return self.root.ids.favorites.add_widget(CardsDrawer(instance = self, source = instance.source, text = instance.text, method = self.change_to_favorite_screen))
+        return self.root.ids.favorites.add_widget(CardsDrawer(instance = self, source = instance.source, text = instance.text, method = self.draw_the_favorite_screen))
+
 
     def on_start(self):
-
-        """Պռոստը սկիզբն ա"""
-
-        prkeq = """
-
-        Կոդը ռան անելուց առաջ համոզվեք, որ աղոթել եք
-
-            ************
-
-        Հայր մեր որ յերկինս ես,
-        սուրբ եղիցի անուն Քո։
-        Եկեսցէ արքայութիւն Քո։
-        Եղիցին կամք Քո
-        որպէս յերկինս եւ յերկրի։
-        Զհաց մեր հանապազորդ
-        տուր մեզ այսօր։
-        Եւ թող մեզ զպարտիս մեր,
-        որպէս եւ մեք թողումք մերոց պարտապանաց։
-        Եւ մի տանիր զմեզ ի փորձութիւն
-        այլ փրկեա զմեզ ի չարէ։
-        Զի քո է արքայութիւն
-        եւ զօրութիւն եւ փառք յաւիտեանս
-        Ամէն
-        """
-
-        print(prkeq)
 
         for item in self.dictionary:
 
             source = self.dictionary[item]
 
-            self.root.ids.images.add_widget(CardsDrawer(instance = self, source = source, text= item, method = self.change_to_item_screen))
+            self.card = CardsDrawer(instance = self, source = source, text= item, method = self.draw_the_item_screen)
+
+            self.root.ids.images.add_widget(self.card)
 
 
 

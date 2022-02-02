@@ -2,6 +2,8 @@
 #:include ./kv/navbar.kv
 #:include ./kv/ItemDrawer.kv
 #:include ./kv/CardsDrawer.kv
+#:include ./kv/about.kv
+#:include ./kv/contacts_screen.kv
 <MainWindow>:
     orientation:'vertical'
 
@@ -10,6 +12,8 @@
         id: manager
 
         Screen:
+
+            name: 'gestures_screen'
 
             MDNavigationLayout:
 
@@ -22,9 +26,11 @@
                             orientation: 'vertical'
 
                             MDToolbar:
+                                id: toolbar
                                 title: "Jestland"
                                 elevation: 10
                                 left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
+
 
 
                             MDBottomNavigation:
@@ -34,6 +40,7 @@
                                     name: 'screen search'
                                     text: 'test'
                                     icon: 'magnify'
+
 
                                     ScreenManager:
                                         id: first_screen_manager
@@ -53,13 +60,6 @@
                                                     height: self.minimum_height
                                                     size_hint_y: None
                                                     spacing: 0
-
-                                                    Button:
-
-                                                        text: 'test'
-                                                        size_hint_y: None
-                                                        height: 100
-                                                        on_release: app.root.ids.first_screen_manager.current = 'item_screen'
 
                                         Screen:
 
@@ -82,7 +82,7 @@
 
                                         cols: 1
                                         ScreenManager:
-                                            id: item_3_manager
+                                            id: favorite_screen_manager
 
                                             Screen:
 
@@ -115,27 +115,13 @@
 
         Screen:
 
-            name: 'second'
-            BoxLayout:
-                orientation: 'vertical'
+            name: 'about_screen'
+            
+            AboutScreen:
 
+        Screen:
+            name: 'contacts_screen'
 
-                MDToolbar:
-                    title: 'About us'
-
-                ScrollView:
-                    do_scroll_x: False
-                    do_scroll_y: True
-
-                    GridLayout:
-
-                        cols: 1
-                        size_hint_y: None
-                        hright: self.minimum_height
-
-
-                        MDLabel:
-                            size_hint_y: None
-                            text: 'Just for test'
-                            height: self.font_size
+            ContactsScreen:
+        
                               
